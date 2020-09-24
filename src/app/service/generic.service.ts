@@ -8,7 +8,7 @@ import {Response} from '../model/response';
 })
 export class GenericService <S> {
 
-  BASE_URL = 'http://localhost:8088/api/v1/';
+  BASE_URL = 'http://localhost:8080/api/v1/';
 
   constructor(private http: HttpClient, @Inject(String) private readonly url: string) {
     this.url = url;

@@ -1,18 +1,78 @@
 <div class="mat-elevation-z8">
-  <table mat-table matSort [dataSource]="dataSource">
 
-    <!-- Generic column -->
-    <ng-container *ngFor="let column of displayedColumns">
-      <ng-container matColumnDef="{{column}}">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> {{column}} </th>
-        <td mat-cell *matCellDef="let element"> {{element[column]}} </td>
+  <div class="container">
+
+    <mat-table matSort [dataSource]="(offline == true) ? matDataSource : dataSource">
+
+      <!-- Generic column -->
+      <!--    <ng-container class="w-100" *ngFor="let column of displayedColumns">-->
+      <!--      <ng-container *ngIf="column != 'actions'" matColumnDef="{{column}}">-->
+      <!--        <mat-header-cell *matHeaderCellDef mat-sort-header> {{ column | uppercase }} </mat-header-cell>-->
+
+      <!--        <mat-cell class="w-100" *matCellDef="let element">-->
+      <!--          <ng-container *ngIf="typeOf(element[column]) != 'object'">-->
+      <!--            <span class="mobile-label">{{ column | uppercase }}:</span>-->
+      <!--            {{element[column]}}-->
+      <!--          </ng-container>-->
+      <!--          <ng-container class="w-100 resp-cell" *ngIf="typeOf(element[column]) == 'object'">-->
+      <!--            <span class="v-center mobile-label">{{ column | uppercase }}:</span>-->
+      <!--            <button class="btn" mat-icon-button (click)="openDialog(element, column, false)">-->
+      <!--              <mat-icon>visibility</mat-icon>-->
+      <!--            </button>-->
+      <!--          </ng-container>-->
+      <!--        </mat-cell>-->
+      <!--      </ng-container>-->
+
+
+
+      <!--    </ng-container>-->
+
+      <!--    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>-->
+      <!--    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>-->
+
+      <div class="empty">
+
+      </div>
+
+      <ng-container class="w-100" *ngFor="let column of tableSchema.columns">-->
+        <ng-container *ngIf="column.type != 'actions'" matColumnDef="{{column.json_name}}">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> {{ column.display_name }} </mat-header-cell>
+
+          <mat-cell class="w-100" *matCellDef="let element">
+            <ng-container *ngIf="column.type != 'object'">
+              <span class="mobile-label">{{ column.display_name }}:</span>
+              <ng-container *ngIf="typeOf(element[column.json_name]) != 'object'">
+                {{element[column.json_name]}}
+              </ng-container>
+            </ng-container>
+            <ng-container class="w-100 resp-cell" *ngIf="column.type == 'object' || column.type == 'array'">
+              <span class="v-center mobile-label">{{ column.display_name }}:</span>
+              <button class="btn" mat-icon-button (click)="openDialog(column, element)">
+                <mat-icon>visibility</mat-icon>
+              </button>
+            </ng-container>
+          </mat-cell>
+        </ng-container>
+        <ng-container *ngIf="column.type == 'actions'" matColumnDef="{{column.json_name}}">
+          <mat-header-cell class="content-right" *matHeaderCellDef mat-sort-header> {{ column.display_name }} </mat-header-cell>
+          <mat-cell class="w-100 content-right" *matCellDef="let element">
+            <button class="text-right" [matMenuTriggerFor]="menu" mat-icon-button>
+              <mat-icon>more_horiz</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button (click)="openDialog(tableSchema, element)" mat-menu-item>Actualizar</button>
+              <button mat-menu-item>Eliminar</button>
+            </mat-menu>
+          </mat-cell>
+        </ng-container>
       </ng-container>
-    </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-  </table>
+      <mat-header-row *matHeaderRowDef="displayedColumns; sticky:true"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
 
-  <mat-paginator pageSize="5" pageIndex="0" [length]="resultLength" [pageSizeOptions]="[5, 10, 15]" showFirstLastButtons></mat-paginator>
+  </div>
+
+  <mat-paginator pageSize="5" pageIndex="0" [length]="resultLength" [pageSizeOptions]="[5, 10, 15]"
+                 showFirstLastButtons></mat-paginator>
 </div>
-<!--<button (click)="addPeriodicElement()">add</button>-->

@@ -1,0 +1,36 @@
+<ng-container *ngIf="column.type == 'object'">
+  <h3 class="center">
+    <b>{{column.display_name}}</b>
+  </h3>
+  <form class="example-form" [formGroup]="formGroup">
+    <ng-container *ngFor="let column of column.columns">
+      <mat-form-field *ngIf="!(column.type == 'object' || column.type == 'array' || column.type == 'actions')" class="w-100">
+        <mat-label>{{column.display_name}}</mat-label>
+
+        <ng-container *ngIf="column.type == 'string'">
+          <input type="text" class="w-100" matInput placeholder="" formControlName="{{column.json_name}}">
+        </ng-container>
+        <ng-container *ngIf="column.type == 'number'">
+          <input type="number" class="w-100" matInput placeholder="" formControlName="{{column.json_name}}">
+        </ng-container>
+
+        <mat-error *ngIf="formGroup.get(column.json_name).hasError('required')">
+          Campo '{{column.display_name}}' es <strong>requerido</strong>
+        </mat-error>
+      </mat-form-field>
+    </ng-container>
+    <div>
+      <button [disabled]="!formGroup.dirty" class="w-100 green center" mat-stroked-button (click)="save()">
+        GUARDAR
+      </button>
+      <mat-card *ngIf="resultInfo == 'success'" class="alert-success">Actualización realizada con exito!</mat-card>
+      <mat-card *ngIf="resultInfo == 'error'" class="alert-danger">Ocurrio un error al actualizar!</mat-card>
+    </div>
+  </form>
+</ng-container>
+
+<ng-container *ngIf="column.type == 'array'">
+  <app-generic-table [route]="route" [service]="service" [tableSchema]="column" [dataSource]="fullData[column.json_name]"></app-generic-table>
+</ng-container>
+
+
